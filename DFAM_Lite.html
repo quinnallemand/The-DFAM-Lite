@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="module" src="DFAM_Lite.js">
+</script>
+<title>The DFAM Lite</title>
+<style>
+  /* Add your CSS styles here */
+  .step {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    margin: 5px;
+    background-color: #eee;
+  }
+
+  .active {
+    background-color: #ffcc00; /* Change color for active step */
+  }
+</style>
+</head>
+<body>
+  <h1>The DFAM Lite</h1>
+  <h2></h2>
+  <div>
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <button id="resetButton">Reset</button>
+  </div>
+  <div>
+    <lable for="tempoSlider">Tempo</lable>
+    <input type="range" id="tempoSlider" min="10.0" max="400.0" value="120.0">
+    <label for="tempoSlider" id="tempo_display">120 BPM</label>
+  </div>
+  <div>
+    <label 
+        for="gainSlider">Gain
+    </label>
+    <input 
+        id="gainSlider" 
+        type="range" 
+        min="-70" 
+        max="12" 
+        value="-70">
+    <label 
+        for="gainSlider" 
+        id="gainDisplay">-70 dBFS
+    </label>
+</div>
+<div>
+    <label 
+        for="decay_slider">Decay
+    </label>
+    <input 
+        id="decay_slider" 
+        type="range" 
+        min="10" 
+        max="1000" 
+        value="200">
+    <label 
+        for="decay_slider" 
+        id="decay_display">200 ms
+    </label>
+</div>
+  <div id="sequencer">
+    <!-- Create steps for the sequencer -->
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <!-- Add more steps as needed -->
+  </div>
+</body>
+</html>
