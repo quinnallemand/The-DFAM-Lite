@@ -7,10 +7,53 @@
 </script>
 <title>The DFAM Lite</title>
 <style>
-  /* Add your CSS styles here */
+  .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+  }
+
+  .switch input { 
+      display: none;
+  }
+
+  .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+
+  .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+
+  input:checked + .slider {
+      background-color: #ccc;
+  }
+
+  input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+  }
   .step {
     width: 50px;
-    height: 50px;
+    height: 20px;
     display: inline-block;
     border: 1px solid #ccc;
     margin: 5px;
@@ -25,45 +68,84 @@
 <body>
   <h1>The DFAM Lite</h1>
   <h2></h2>
+  
+  <div>
+    <button id="Initialize_Sound">Initialize Sound</button>
+  </div>
   <div>
     <button id="startButton">Start</button>
     <button id="stopButton">Stop</button>
     <button id="resetButton">Reset</button>
   </div>
   <div>
+    <lable for="OSC_Freq">VCO1 Freq</lable>
+    <input type="range" id="OSC_Freq" min="110" max="2000" step="1" value="220">
+    <label for="OSC_Freq" id="OSC_Freq_display">220 hz</label>
+  </div>
+   <div>
+    <p1>Square</p1>
+    <label class="switch">
+      <input type="checkbox" id="OSC_Type">
+      <span class="slider"></span>
+   </label>
+   <p1>Triangle</p1>
+  </div>
+  <div>
+    <lable for="OSC2_Freq">VCO2 Freq</lable>
+    <input type="range" id="OSC2_Freq" min="110" max="2000" step="1" value="220">
+    <label for="OSC2_Freq" id="OSC2_Freq_display">220 hz</label>
+  </div>
+  <div>
+    <p1>Square</p1>
+    <label class="switch">
+      <input type="checkbox" id="OSC2_Type">
+      <span class="slider"></span>
+   </label>
+   <p1>Triangle</p1>
+  </div>
+
+  <div>
     <lable for="tempoSlider">Tempo</lable>
-    <input type="range" id="tempoSlider" min="10.0" max="400.0" value="120.0">
+    <input type="range" id="tempoSlider" min="10.0" max="800" value="120.0">
     <label for="tempoSlider" id="tempo_display">120 BPM</label>
   </div>
   <div>
     <label 
-        for="gainSlider">Gain
+        for="gainSlider">Gain</label>
+    <input id="gainSlider" type="range" min="-70" max="-20" value="-70">
+    <label for="gainSlider" id="gainDisplay">-70 dBFS
     </label>
-    <input 
-        id="gainSlider" 
-        type="range" 
-        min="-70" 
-        max="12" 
-        value="-70">
-    <label 
-        for="gainSlider" 
-        id="gainDisplay">-70 dBFS
-    </label>
+    <div>
+      <lable for="VCO_Decay">VCO Decay</lable>
+      <input type="range" id="VCO_Decay" min="0.01" max=".7" step=".01" value="0">
+      <label for="VCO_Decay" id="VCO_Decay_display"></label>
+    </div>
+    <div>
+      <lable for="VCO_Decay_AMT">VCO Decay AMT</lable>
+      <input type="range" id="VCO_Decay_AMT" min="0" max="1000" step="10" value="0">
+      <label for="VCO_Decay_AMT" id="VCO_Decay_AMT_display"></label>
+    </div>
 </div>
 <div>
-    <label 
-        for="decay_slider">Decay
-    </label>
-    <input 
-        id="decay_slider" 
-        type="range" 
-        min="10" 
-        max="1000" 
-        value="200">
-    <label 
-        for="decay_slider" 
-        id="decay_display">200 ms
-    </label>
+    <label for="VCA_slider">VCA Decay</label>
+    <input id="VCA_slider" type="range" min="10" max="1000" value="200">
+    <label for="VCA_slider" id="VCA_display">200 ms</label>
+</div>
+<div>
+  <label for="frequencyControl">Filter Frequency (Hz)</label>
+  <input type="range" id="frequencyControl" min="0" max="100" step="1" value="50">
+</div>
+<div>
+  <p1>LP</p1>
+  <label class="switch">
+    <input type="checkbox" id="filter_type">
+    <span class="slider"></span>
+ </label>
+ <p1>HP</p1>
+</div>
+<div>
+  <label for="qControl">Filter Q Value</label>
+  <input type="range" id="qControl" min="0.1" max="10" step="0.1" value="1">
 </div>
   <div id="sequencer">
     <!-- Create steps for the sequencer -->
@@ -77,5 +159,50 @@
     <div class="step"></div>
     <!-- Add more steps as needed -->
   </div>
+</div>
+<div id="pitch">
+  <!-- Create steps for the sequencer -->
+
+    <div>
+      <input type="range" id="pitch_1" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_1">FREQ</label>
+       </div>
+      <input type="range" id="pitch_2" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_2">FREQ</label>
+        </div>
+       <input type="range" id="pitch_3" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_3">FREQ</label>
+       </div>
+       <input type="range" id="pitch_4" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_4">FREQ</label>
+       </div>
+       <input type="range" id="pitch_5" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_5">FREQ</label>
+       </div>
+       <input type="range" id="pitch_6" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_6">FREQ</label>
+       </div>
+       <input type="range" id="pitch_7" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_7">FREQ</label>
+       </div>
+       <input type="range" id="pitch_8" min="-90" max="100" step="1" value="0">
+        <div>
+          <label for="pitch_8">FREQ</label>
+       </div>
+    </div>
+    
+  
+  
+    
+  
+  <!-- Add more steps as needed -->
+</div>
 </body>
 </html>
