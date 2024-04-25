@@ -7,6 +7,12 @@
 </script>
 <title>The DFAM Lite</title>
 <style>
+  body {
+background-color: #3e3e3e;
+  }
+  h1 {
+    color: #ffcc00;
+  }
   .switch {
       position: relative;
       display: inline-block;
@@ -53,35 +59,183 @@
   }
   .step {
     width: 50px;
-    height: 20px;
+    height: 50px;
     display: inline-block;
-    border: 1px solid #ccc;
-    margin: 5px;
-    background-color: #eee;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: #3e3e3e;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
   }
 
   .active {
     background-color: #ffcc00; /* Change color for active step */
+    box-shadow: 3px 3px 10px #cbb24c, -3px -3px 10px #4f4006;
+    
   }
+  
+  .pitch {
+    transform: rotate(270deg);
+    width: 120px;
+    height: 50px;
+    display:inline-block;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left:  -3px;
+    margin-right: -3px;
+    border-radius: 10px;
+    box-shadow: 3px -3px 10px #464646, -3px 3px 10px #272727;
+    -webkit-appearance: none;
+     appearance: none;
+     /* Set the thumb color */
+    border-radius: 5px;
+    background-color: #3e3e3e;
+     /* Set the size of the thumb */
+    width:80px;
+    height: 20px;
+  }
+ 
+  .pitchLabel {
+    width:50px;
+    display:inline-block;
+    margin-left: 24px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+  .container {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+  }
+
+  .btn {
+    background-color: #3e3e3e;
+    border: none;
+    border-radius: 10px;
+    color: #ccc;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    margin: 10px;
+    height: 30px;
+  }
+  .btn:active {
+    box-shadow: 2px 2px 2px #464646, -2px -2px 2px #272727;
+  }
+
+  .play_btn {
+    background-color:#0263bd;
+    border: none;
+    border-radius: 30px;
+    color: #ccc;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    margin: 10px;
+    height: 50px;
+    width:100px;
+  }
+  .play_btn:active {
+    box-shadow: 1px 1px 5px #464646, -1px -1px 5px #272727;
+  }
+
+  .play_btn.active {
+    box-shadow: 1px 1px 5px #297fd0, -1px -1px 5px #001931;
+  }
+
+
 </style>
 </head>
 <body>
-  <h1>The DFAM Lite</h1>
-  <h2></h2>
-  
-  <div>
-    <button id="Initialize_Sound">Initialize Sound</button>
+  <div class="container">
+      <h1 >The DFAM Lite</h1>
   </div>
-  <div>
-    <button id="startButton">Start</button>
-    <button id="stopButton">Stop</button>
-    <button id="resetButton">Reset</button>
+  <div class="container">
+      <button class="btn" id="Initialize_Sound">Initialize Sound</button>
+  </div>
+  <div class="container">
+    <div class="content">
+      <button class="play_btn" id="startButton">Start/Stop</button>
+      <button class="btn" id="resetButton">Reset</button>
+      <button class="btn" id="startRecording">Start Recording</button>
+      <button class="btn" id="stopRecording" disabled>Stop Recording</button>
+      <a id="downloadLink" style="display: none;">Download Audio</a>
+    </div>
+  </div>
+  <div class="container">
+    <div id="sequencer">
+      <!-- Create steps for the sequencer -->
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <!-- Add more steps as needed -->
+    </div>
+  </div>
+  <div class="container">
+    <!-- Create steps for the sequencer -->
+      <input class="pitch" type="range" id="pitch_1" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_2" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_3" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_4" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_5" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_6" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_7" min="-90" max="100" step="1" value="0">
+      <input class="pitch" type="range" id="pitch_8" min="-90" max="100" step="1" value="0" >
+    <!-- Add more steps as needed -->
+  </div>
+  <div class="container">
+    <label class="pitchLabel" for="pitch_1">FREQ</label>
+    <label class="pitchLabel" for="pitch_2">FREQ</label>
+    <label class="pitchLabel" for="pitch_3">FREQ</label>
+    <label class="pitchLabel" for="pitch_4">FREQ</label>
+    <label class="pitchLabel" for="pitch_5">FREQ</label>
+    <label class="pitchLabel" for="pitch_6">FREQ</label>
+    <label class="pitchLabel" for="pitch_7">FREQ</label>
+    <label class="pitchLabel" for="pitch_8">FREQ</label>
+  </div>
+  <div class="container">
+    <!-- Create steps for the sequencer -->
+      <input class="pitch" type="range" id="velocity_1" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_2" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_3" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_4" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_5" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_6" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_7" min="0.0" max="1.0" step="0.1" value="0.5">
+      <input class="pitch" type="range" id="velocity_8" min="0.0" max="1.0" step="0.1" value="0.5" >
+    <!-- Add more steps as needed -->
+  </div>
+  <div class="container">
+    <label class="pitchLabel" for="velocity_1">VEL</label>
+    <label class="pitchLabel" for="velocity_2">VEL</label>
+    <label class="pitchLabel" for="velocity_3">VEL</label>
+    <label class="pitchLabel" for="velocity_4">VEL</label>
+    <label class="pitchLabel" for="velocity_5">VEL</label>
+    <label class="pitchLabel" for="velocity_6">VEL</label>
+    <label class="pitchLabel" for="velocity_7">VEL</label>
+    <label class="pitchLabel" for="velocity_8">VEL</label>
   </div>
   <div>
     <lable for="OSC_Freq">VCO1 Freq</lable>
     <input type="range" id="OSC_Freq" min="110" max="2000" step="1" value="220">
     <label for="OSC_Freq" id="OSC_Freq_display">220 hz</label>
   </div>
+  <div>
+    <label 
+        for="osc1gainSlider">OSC 1 Gain</label>
+    <input id="osc1gainSlider" type="range" min="-40" max="0" value="0">
+    <label for="osc1gainSlider" id="osc1gainDisplay">0 dBFS
+    </label>
+  </div>
+    <div>
+        <label 
+            for="whiteNoise_gain_slider">White Noise Gain</label>
+        <input id="whiteNoise_gain_slider" type="range" min="-40" max="0" value="0">
+        <label for="whiteNoise_gain_slider" id="white_noise_gain_value">0 dBFS
+        </label>
+    </div>
    <div>
     <p1>Square</p1>
     <label class="switch">
@@ -95,6 +249,13 @@
     <input type="range" id="OSC2_Freq" min="110" max="2000" step="1" value="220">
     <label for="OSC2_Freq" id="OSC2_Freq_display">220 hz</label>
   </div>
+  <div>
+    <label 
+        for="osc2gainSlider">OSC 2 Gain</label>
+    <input id="osc2gainSlider" type="range" min="-40" max="0" value="0">
+    <label for="osc2gainSlider" id="osc2gainDisplay">0 dBFS
+    </label>
+    <div>
   <div>
     <p1>Square</p1>
     <label class="switch">
@@ -143,66 +304,11 @@
  </label>
  <p1>HP</p1>
 </div>
-<div>
+<div> 
   <label for="qControl">Filter Q Value</label>
   <input type="range" id="qControl" min="0.1" max="10" step="0.1" value="1">
 </div>
-  <div id="sequencer">
-    <!-- Create steps for the sequencer -->
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <div class="step"></div>
-    <!-- Add more steps as needed -->
-  </div>
-</div>
-<div id="pitch">
-  <!-- Create steps for the sequencer -->
 
-    <div>
-      <input type="range" id="pitch_1" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_1">FREQ</label>
-       </div>
-      <input type="range" id="pitch_2" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_2">FREQ</label>
-        </div>
-       <input type="range" id="pitch_3" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_3">FREQ</label>
-       </div>
-       <input type="range" id="pitch_4" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_4">FREQ</label>
-       </div>
-       <input type="range" id="pitch_5" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_5">FREQ</label>
-       </div>
-       <input type="range" id="pitch_6" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_6">FREQ</label>
-       </div>
-       <input type="range" id="pitch_7" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_7">FREQ</label>
-       </div>
-       <input type="range" id="pitch_8" min="-90" max="100" step="1" value="0">
-        <div>
-          <label for="pitch_8">FREQ</label>
-       </div>
-    </div>
-    
-  
-  
-    
-  
-  <!-- Add more steps as needed -->
-</div>
+
 </body>
 </html>

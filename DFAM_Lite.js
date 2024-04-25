@@ -6,12 +6,16 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 //initializing HTML elements
 const initialize_sound = document.getElementById("Initialize_Sound")
 const startButton = document.getElementById("startButton");
-const stopButton = document.getElementById("stopButton");
+const startRecording = document.getElementById("startRecording")
+const stopRecording = document.getElementById("stopRecording")
 const resetButton = document.getElementById("resetButton");
 const oscTypeSwitch = document.getElementById("OSC_Type");
 const oscTypeSwitch2 = document.getElementById("OSC2_Type");
 const oscFreqSlider = document.getElementById("OSC_Freq");
 const oscFreqSlider2 = document.getElementById("OSC2_Freq");
+const oscGainSlider1 = document.getElementById("osc1gainSlider")
+const oscGainSlider2 = document.getElementById("osc2gainSlider")
+const whiteNoise_gain_slider = document.getElementById("whiteNoise_gain_slider")
 const tempoSlider = document.getElementById("tempoSlider");
 const gainControl = document.getElementById("gainSlider");
 const VCA_Control = document.getElementById("VCA_slider");
@@ -28,7 +32,14 @@ const pitchControl5 = document.getElementById("pitch_5");
 const pitchControl6 = document.getElementById("pitch_6");
 const pitchControl7 = document.getElementById("pitch_7");
 const pitchControl8 = document.getElementById("pitch_8");
-
+const velControl1 = document.getElementById("velocity_1")
+const velControl2 = document.getElementById("velocity_2")
+const velControl3 = document.getElementById("velocity_3")
+const velControl4 = document.getElementById("velocity_4")
+const velControl5 = document.getElementById("velocity_5")
+const velControl6 = document.getElementById("velocity_6")
+const velControl7 = document.getElementById("velocity_7")
+const velControl8 = document.getElementById("velocity_8")
 // assigns the "steps" of my sequencer to an object
 const steps = document.querySelectorAll('.step');
 
@@ -36,6 +47,7 @@ const steps = document.querySelectorAll('.step');
 let filter;
 let oscillator = null;
 let oscillator2 = null;
+let audioOutput = null
 let attack = 10;
 let decay = 200;
 let intervalId;
@@ -47,11 +59,22 @@ let filterFrequency = 1000;
 let oscFreq = 220;
 let oscFreq2 = 220;
 let VCO_Decay = 50;
+let mediaRecorder;
+let chunks = [];
+let noiseBuffer;
+let whiteNoise;
+let white_noise_gain;
 
 
 //creating new oscillator node
 oscillator = audioCtx.createOscillator();
 oscillator2 = audioCtx.createOscillator();
+
+
+const osc1Gain = audioCtx.createGain()
+const osc2Gain = audioCtx.createGain()
+
+
 //creating new filter node
 filter = audioCtx.createBiquadFilter();
 //creating ADSR nodes
@@ -65,6 +88,7 @@ const adsrNode7 = audioCtx.createGain();
 const adsrNode8 = audioCtx.createGain();
 //creating gain node
 const gainNode = audioCtx.createGain();
+
 //oscillator initial settings
 oscillator.type = "square";
 oscillator2.type = "square";
@@ -76,11 +100,14 @@ filter.type = 'lowpass'; // Use a low-pass filter
 filter.frequency.setValueAtTime(parseFloat(filterFrequency), audioCtx.currentTime); // Set initial cutoff frequency to 1000 Hz
 filter.Q.setValueAtTime(1, audioCtx.currentTime); // Set initial Q value to 1
 
+
+
 //starting both oscillators
-function initialize_button () {
-oscillator.start();
-oscillator2.start();
-}
+
+//setting initial values of Osc Gain nodes
+osc1Gain.gain.value = 1 ;
+osc2Gain.gain.value = 1 ;
+
 
 //set initial gain value for ADSR and Gain Nodes
 adsrNode1.gain.value = 0. ;
@@ -93,29 +120,41 @@ adsrNode7.gain.value = 0. ;
 adsrNode8.gain.value = 0. ; 
 
 gainNode.gain.value = 0. ;
+
+oscillator.connect(osc1Gain)
+oscillator2.connect(osc2Gain)
+whiteNoise = audioCtx.createBufferSource();
+white_noise_gain = audioCtx.createGain();
+white_noise_gain.gain.value = .5; // Set initial volume
+
+
 //connecting the Oscilator to the ADSR Note
-oscillator.connect(adsrNode1);
-oscillator.connect(adsrNode2);
-oscillator.connect(adsrNode3);
-oscillator.connect(adsrNode4);
-oscillator.connect(adsrNode5);
-oscillator.connect(adsrNode6);
-oscillator.connect(adsrNode7);
-oscillator.connect(adsrNode8);
+osc1Gain.connect(adsrNode1);
+osc1Gain.connect(adsrNode2);
+osc1Gain.connect(adsrNode3);
+osc1Gain.connect(adsrNode4);
+osc1Gain.connect(adsrNode5);
+osc1Gain.connect(adsrNode6);
+osc1Gain.connect(adsrNode7);
+osc1Gain.connect(adsrNode8);
 
 //connects oscillator 2 to the adsr nodes
 /*
 *the reason there are so many of these is because I wanted the decay to be able to to extend past the attack of the next note
 *the only way to do that was to have multiple ADSR channels running simultaniously, that way while one of them decays the next one can start, uneffected.
 */
-oscillator2.connect(adsrNode1);
-oscillator2.connect(adsrNode2);
-oscillator2.connect(adsrNode3);
-oscillator2.connect(adsrNode4);
-oscillator2.connect(adsrNode5);
-oscillator2.connect(adsrNode6);
-oscillator2.connect(adsrNode7);
-oscillator2.connect(adsrNode8);
+osc2Gain.connect(adsrNode1);
+osc2Gain.connect(adsrNode2);
+osc2Gain.connect(adsrNode3);
+osc2Gain.connect(adsrNode4);
+osc2Gain.connect(adsrNode5);
+osc2Gain.connect(adsrNode6);
+osc2Gain.connect(adsrNode7);
+osc2Gain.connect(adsrNode8);
+
+
+
+
 //connecting ADSR to filter Node
 adsrNode1.connect(filter);
 adsrNode2.connect(filter);
@@ -130,6 +169,37 @@ filter.connect(gainNode);
 //connecting Gain to Output
 gainNode.connect(audioCtx.destination);
 
+function initialize_button () {
+    
+    noiseBuffer = createWhiteNoiseBuffer();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.connect(white_noise_gain);
+    white_noise_gain.connect(adsrNode1)
+    white_noise_gain.connect(adsrNode2)
+    white_noise_gain.connect(adsrNode3)
+    white_noise_gain.connect(adsrNode4)
+    white_noise_gain.connect(adsrNode5)
+    white_noise_gain.connect(adsrNode6)
+    white_noise_gain.connect(adsrNode7)
+    white_noise_gain.connect(adsrNode8)
+
+    whiteNoise.start();
+    oscillator.start();
+    oscillator2.start();
+};
+
+function createWhiteNoiseBuffer() {
+    const bufferSize = 2000 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1; // Generate random values between -1 and 1
+    }
+
+    return buffer;
+};
+
 function playStep() {
     // Remove active class from all steps
     steps.forEach(step => step.classList.remove('active'));
@@ -142,14 +212,21 @@ function playStep() {
 };
 // initializes the sequence and assigns default tempo
 function playSequencer(tempo) {
-    const intervalDuration = 60000 / tempo;
+    if (isPlaying==false) {
+        const intervalDuration = 60000 / tempo;
     intervalId = setInterval(playStep, intervalDuration);
+    isPlaying = true
+    } else {
+        clearInterval(intervalId);
+        steps.forEach(step => step.classList.remove('active'));
+        isPlaying = false
+    }
 };
 // Function to stop the sequencer
-function stopSequencer() {
-    clearInterval(intervalId);
-    steps.forEach(step => step.classList.remove('active'));
-};
+// function stopSequencer() {
+//     clearInterval(intervalId);
+//     steps.forEach(step => step.classList.remove('active'));
+// };
 //resets the Step back to the starting point
 function resetSequencer() { 
     currentStep = 0;
@@ -161,11 +238,34 @@ function updateOscFreq1 () {
     //placing the new value into our label in html
     document.getElementById("OSC_Freq_display").innerText = `${oscFreq} hz`
 };
+
+function updateOsc1Gain() {
+    let sliderVal = parseFloat(oscGainSlider1.value)
+    document.getElementById("osc1gainDisplay").innerText = `${sliderVal} dBFS`
+    let linAmp = 10**(sliderVal/20)
+    osc1Gain.gain.linearRampToValueAtTime(linAmp, audioCtx.currentTime + 0.05);
+    console.log(linAmp)
+};
+function updateWhiteNoiseGain() {
+    let sliderVal = parseFloat(whiteNoise_gain_slider.value)
+    document.getElementById("white_noise_gain_value").innerText = `${sliderVal} dBFS`
+    let linAmp = 10**(sliderVal/20)
+    white_noise_gain.gain.linearRampToValueAtTime(linAmp, audioCtx.currentTime + 0.05);
+    console.log(linAmp)
+};
 //updates the frequency of our Second Oscillator
 function updateOscFreq2 () {
     oscFreq2 = parseInt(oscFreqSlider2.value)
     oscillator2.frequency.linearRampToValueAtTime(oscFreq2, audioCtx.currentTime + 0.05)
     document.getElementById("OSC2_Freq_display").innerText = `${oscFreq2} hz`
+};
+
+function updateOsc2Gain() {
+    let sliderVal = parseFloat(oscGainSlider2.value)
+    document.getElementById("osc2gainDisplay").innerText = `${sliderVal} dBFS`
+    let linAmp = 10**(sliderVal/20)
+    osc2Gain.gain.linearRampToValueAtTime(linAmp, audioCtx.currentTime + 0.05);
+    console.log(linAmp)
 };
 //enables us to switch between wav types of Oscillator 1 with our checkbox component in html
 function toggleOscType1 () {
@@ -193,15 +293,18 @@ function toggleFilterType () {
 };
 //updates the tempo and continues the sequence for a "somewhat seamless" tempo change while the sequencer is playing
 //while playing the sequencer if the change the tempo the sequence doesnt advance while you do it which is annoying
+
 function updateTempo() {
-    
-    tempo = parseInt(tempoSlider.value);
+    let newTempo = parseInt(tempoSlider.value)
+if (tempo !== newTempo) {
+    tempo = newTempo;
    const intervalDuration = 60000 / tempo;
 
      clearInterval(intervalId)
     intervalId = setInterval(playStep, intervalDuration)
 
     document.getElementById("tempo_display").innerText = `${tempoSlider.value} BPM`
+}
 };
 // updates our master gainNode value
 function updateGain() {
@@ -249,7 +352,9 @@ const startTone = function() {
         case 1:
             // Action to be executed when the sequencer is at step 1
                 //resets adsr 1 gain to 1
-                 adsrNode1.gain.setValueAtTime( 1.0, audioCtx.currentTime)
+                 adsrNode1.gain.setValueAtTime(
+                    parseFloat(velControl1.value),
+                     audioCtx.currentTime)
                 //this adds to the oscilator starting frequency by adding the value from the VCO AMT slider to the original Freq
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
                 oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -263,9 +368,7 @@ const startTone = function() {
             break;
         case 2:
             // Action to be executed when the sequencer is at step 2
-            adsrNode2.gain.setValueAtTime(
-                1.0, 
-                audioCtx.currentTime)
+            adsrNode2.gain.setValueAtTime(parseFloat(velControl2.value), audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value),addedTime)
                 oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), addedTime)
@@ -278,7 +381,7 @@ const startTone = function() {
         case 3:
             // Action to be executed when the sequencer is at step 3
             adsrNode3.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl3.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -292,7 +395,7 @@ const startTone = function() {
         case 4:
             // Action to be executed when the sequencer is at step 4
             adsrNode4.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl4.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -306,7 +409,7 @@ const startTone = function() {
         case 5:
             // Action to be executed when the sequencer is at step 5
             adsrNode5.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl5.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -320,7 +423,7 @@ const startTone = function() {
         case 6:
             // Action to be executed when the sequencer is at step 6
             adsrNode6.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl6.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -334,7 +437,7 @@ const startTone = function() {
         case 7:
             // Action to be executed when the sequencer is at step 7
             adsrNode7.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl7.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -348,7 +451,7 @@ const startTone = function() {
         case 0:
             // Action to be executed when the sequencer is at step 8
             adsrNode8.gain.setValueAtTime(
-                1.0, 
+                parseFloat(velControl8.value), 
                 audioCtx.currentTime)
 
                 oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
@@ -412,13 +515,51 @@ const stopTone = function() {
             break;
     }
 };
+
+function startRecordingbutton() {
+    chunks = [];
+    mediaRecorder = new MediaRecorder(getAudioStream());
+
+    mediaRecorder.ondataavailable = function(e) {
+      chunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = function() {
+      const blob = new Blob(chunks, { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.getElementById('downloadLink');
+      downloadLink.href = url;
+      downloadLink.download = 'recording.wav';
+      downloadLink.style.display = 'block';
+    };
+
+    mediaRecorder.start();
+    startRecording.disabled = true;
+    stopRecording.disabled = false;
+};
+
+  function stopRecordingbutton() {
+    mediaRecorder.stop();
+    startRecording.disabled = false;
+    stopRecording.disabled = true;
+};
+
+  function getAudioStream() {
+    
+    const destination = audioCtx.createMediaStreamDestination();
+    gainNode.connect(destination)
+    return destination.stream;
+};
+
+  startRecording.addEventListener('click', startRecordingbutton);
+  stopRecording.addEventListener('click', stopRecordingbutton);
 // Event listeners
 startButton.addEventListener('click', function () {
     const tempo = parseInt(tempoSlider.value);
     playSequencer(tempo);
+    this.classList.toggle("active")
 });
   initialize_sound.addEventListener('click', initialize_button);
-  stopButton.addEventListener('click', stopSequencer);
   resetButton.addEventListener('click', resetSequencer);
   tempoSlider.addEventListener('input', updateTempo);
   gainControl.addEventListener("input", updateGain);
@@ -426,11 +567,15 @@ startButton.addEventListener('click', function () {
   filterFreqSlider.addEventListener("input", updateFilterFrequency);
   qControl.addEventListener("input", updateFilterQ);
   oscFreqSlider.addEventListener("input", updateOscFreq1);
+  oscGainSlider1.addEventListener("input", updateOsc1Gain);
   oscFreqSlider2.addEventListener("input", updateOscFreq2);
+  oscGainSlider2.addEventListener("input", updateOsc2Gain)
   oscTypeSwitch.addEventListener("change", toggleOscType1);
   oscTypeSwitch2.addEventListener("change", toggleOscType2);
   filterTypeSwitch.addEventListener("change", toggleFilterType);
+  whiteNoise_gain_slider.addEventListener("input", updateWhiteNoiseGain)
 
+  
 
 
 
