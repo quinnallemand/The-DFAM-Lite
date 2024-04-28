@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="module" src="DFAM_Lite.js">
+</script>
+<title>The DFAM Lite</title>
+<style>
+  body {
+background-color: #3e3e3e;
+  }
+  h1 {
+    color: #eac327;
+    font-size:xx-large;
+    font-family:monospace;
+    font-style: bold;
+  }
+  h2 {
+    font-family:monospace;
+    font-style:normal;
+    font-size:larger;
+  }
+
+  .footer_text {
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+      font-size: smaller;
+      color: #262626;
+      height: 100px;
+      width: 1000px;
+      text-align: center;
+  }
+
+  .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+  }
+
+  .switch input { 
+      display: none;
+  }
+
+  .slider {
+      position: absolute;
+      cursor: pointer;
+      transform: rotate(90deg);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #3e3e3e;
+      box-shadow: -3px 3px 10px #464646, 3px -3px 10px #272727;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+
+  .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: #eac327;
+      box-shadow: -1px 1px 5px #464646, 1px -1px 5px #272727;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+
+  input:checked + .slider {
+      background-color: #3e3e3e;
+  }
+
+  input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+  }
+  .slider_text {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .step {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    margin-bottom: 20px;
+    background-color: #3e3e3e;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+  }
+
+  .active {
+    background-color: #eac327; /* Change color for active step */
+    box-shadow: 3px 3px 10px #cbb24c, -3px -3px 10px #4f4006;
+    
+  }
+  
+  .sequence_slider {
+    transform: rotate(270deg);
+    width: 120px;
+    height: 50px;
+    display:inline-block;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left:  -5px;
+    margin-right: -5px;
+    border-radius: 10px;
+    box-shadow: 3px -3px 10px #464646, -3px 3px 10px #272727;
+    -webkit-appearance:none;
+    cursor: auto;
+     appearance: none;
+     /* Set the thumb color */
+    border-radius: 5px;
+    background-color: #3e3e3e;
+     /* Set the size of the thumb */
+    width:80px;
+    height: 15px;
+  }
+
+  .sequence_slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Removes default styling */
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background-color: #eac327;
+   border-radius: 50%;
+   box-shadow: 1px -1px 5px #464646, -1px 1px 5px #272727;
+  }
+ 
+  .sequence_slider_label {
+    width:50px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left:0px;
+    color: #ccc;
+  }
+  .container {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    font-style: bold;
+    font-size: smaller;
+  }
+  .pitch_container {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    font-style: bold;
+    font-size: smaller;
+    transform: translateX(-25px);
+    margin-bottom:20px
+  }
+
+  .velocity_container {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    font-style: bold;
+    font-size: smaller;
+    transform: translateX(-25px);
+    margin-bottom:20px
+  }
+
+  .content {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center;
+    margin: 10px;
+  }
+
+  .slider_param {
+    transform: rotate(270deg);
+    display:inline-block;
+    margin-top:60px;
+    margin-bottom:50px;
+    border-radius: 10px;
+    box-shadow: 3px -3px 10px #464646, -3px 3px 10px #272727;
+    -webkit-appearance: none;
+     appearance: none;
+     /* Set the thumb color */
+    border-radius: 5px;
+    background-color: #3e3e3e;
+     /* Set the size of the thumb */
+    width:100px;
+    height: 15px;
+  }
+
+  .slider_param::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Removes default styling */
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background-color: #eac327;
+   border-radius: 50%;
+   box-shadow: 1px -1px 5px #464646, -1px 1px 5px #272727;
+  }
+
+
+  .mixer_container {
+    display:flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    font-style: bold;
+    font-size: smaller;
+    border-radius: 10px;
+    height: 150px;
+    margin-bottom:10px;
+  }
+
+  .mixer_content {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left:  10px;
+    margin-right: 10px;
+    border-radius: 10px;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    height: 150px;
+    width:50px;
+    color:#ccc;
+  }
+
+  .lower_outer_container {
+    display:flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    font-style: bold;
+    font-size: smaller;
+    border-radius: 10px;
+    height: 200px;
+    width: 150px;
+    margin-bottom:10px;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .lower_outer_container_slim {
+    display:flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    font-style: bold;
+    font-size: smaller;
+    border-radius: 10px;
+    height: 200px;
+    width: 75px;
+    margin-bottom:10px;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .lower_outer_container_wide {
+    display:flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    font-style: bold;
+    font-size: smaller;
+    border-radius: 10px;
+    height: 200px;
+    width: 225px;
+    margin-bottom:10px;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .title_outer_container_wide {
+    display:flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-family:monospace;
+    box-shadow: -10px -10px 20px #464646, 10px 10px 20px #272727;
+    font-style: bold;
+    font-size: smaller;
+    border-radius: 10px;
+    height: 50px;
+    width: 225px;
+    margin-top: 20px;
+    margin-bottom:30px;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .vco_container {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    height: 150px;
+    width:70px;
+    color:#ccc;
+  }
+
+  .master_mixer_content {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left:  50px;
+    margin-right: 50px;
+    border-radius: 10px;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    height: 150px;
+    color:#ccc;
+  }
+
+  .explanation_container {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    height: 450px;
+    width: 600px;
+    margin-bottom: 10px;
+    font-family: monospace;
+    font-size: small;
+    font-style: normal;
+    text-align: center;
+  }
+
+  .explanation_content {
+    display:flex;
+    justify-content: center;
+    height: 20px;
+    width: 550px;
+    border-radius: 10px;
+    color:#ccc;
+    margin-top:10px;
+    margin-bottom: 20px;
+    
+  }
+
+  .btn {
+    background-color: #3e3e3e;
+    border: none;
+    border-radius: 10px;
+    color: #ccc;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    margin: 10px;
+    height: 30px;
+    font-family:monospace;
+    font-style: bold;
+    font-size: small;
+  }
+
+  .btn:active {
+    box-shadow: 2px 2px 2px #464646, -2px -2px 2px #272727;
+  }
+
+  .play_btn {
+    background-color:#eac327;
+    border: none;
+    border-radius: 30px;
+    color: #000000;
+    box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
+    margin: 10px;
+    height: 50px;
+    width:100px;
+    font-family:monospace;
+    font-style: bold;
+    font-size: medium;
+  }
+  .play_btn:active {
+    box-shadow: 2px 2px 10px #464646, -2px -2px 10px #272727;
+  }
+
+  .play_btn.active {
+    box-shadow: 1px 1px 5px #464646, -1px -1px 5px #272727;
+  }
+  a {
+    color: #eac327;
+  }
+
+  .title_cards {
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    color:white;
+  }
+
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="title_outer_container_wide">
+      <h1 >The DFAM Lite</h1>
+    </div>
+  </div>
+    <div class="container">
+      <div class="explanation_container">
+        <div class="explanation_content">WELCOME!</div>
+        <div class="explanation_content">THE DFAM LITE IS AN INTERPRETATION OF THE "DFAM" FROM MOOG WHICH IS A STEP SEQUENCER MEANT TO MIMIC DRUM NOISES USING SYNTHESIZED SOUND.</div>
+        <div class="explanation_content">IN ORDER TO GET STARTED YOU FIRST NEED TO HIT THE "INITIALIZE SOUND" BUTTON BELOW. THIS WILL START THE OSCILLARS AS WELL AS THE WHITE NOISE GENERATOR. </div>
+        <div class="explanation_content">AFTER THAT, PRESS THE "START/STOP" BUTTON, WHICH WILL START THE SEQUENCER, AND THEN SLIDE THE MASTER VOLUME UP TO AN APPROPRIATE VOLUME FOR YOUR SYSTEM.</div>
+        <div class="explanation_content">FROM THERE YOU CAN USE ANY OF THE SLIDERS OR SWITCHES BELOW IN ORDER TO CREATE A SOUND THAT YOU LIKE.</div>
+        <div class="explanation_content">TO RECORD SOUND, JUST HIT THE "START RECORDING" BUTTON. THIS WILL CAPTURE THE SOUND STARTING FROM THE MOMENT THE BUTTON IS PRESSED.</div>
+        <div class="explanation_content">ONCE DONE, JUST HIT THE "STOP RECORDING" BUTTON AND A DOWNLOAD LINK WILL APPEAR UNDER THE "INITIALIZE SOUND" BUTTON.</div>
+        <div class="explanation_content">CLICK THE LINK TO DOWNLOAD YOUR VERY OWN "DFAM_LITE_RECORDING.WAV" FILE</div>
+        <div class="explanation_content">ENJOY!</div>
+    </div>
+  </div>
+  <div class="container">
+      <button class="btn" id="Initialize_Sound">Initialize Sound</button>
+  </div>
+  <div class="container">
+    <a id="downloadLink" style="display: none;">Click to Download Audio</a>
+  </div>
+  <div class="container">
+    <div class="content">
+      <button class="play_btn" id="startButton">Start/Stop</button>
+      <button class="btn" id="resetButton">Reset</button>
+      <button class="btn" id="startRecording">Start Recording</button>
+      <button class="btn" id="stopRecording" disabled>Stop Recording</button>
+      
+    </div>
+  </div>
+  <div class="mixer_container">
+    <div class="master_mixer_content">
+      <input class="slider_param" id="gainSlider" type="range" min="-70" max="-20" value="-70">
+      <label for="gainSlider">MASTER</label>
+    </div>
+    <div class="mixer_content">
+      <input class="slider_param" id="osc1gainSlider" type="range" min="-40" max="0" value="0">
+      <label for="osc1gainSlider">OSC 1</label>
+    </div>
+    <div class="mixer_content">
+      <input class="slider_param" id="whiteNoise_gain_slider" type="range" min="-40" max="0" value="0">
+      <label for="whiteNoise_gain_slider">NOISE</label>
+    </div>
+    <div class="mixer_content">
+      <input class="slider_param" id="osc2gainSlider" type="range" min="-40" max="0" value="0">
+      <label for="osc2gainSlider">OSC 2</label>
+    </div>
+    <div class="master_mixer_content">
+      <lable for="tempoSlider">Tempo</lable>
+      <input class="slider_param" type="range" id="tempoSlider" min="50" max="800" value="240.0">
+      <label for="tempoSlider" id="tempo_display">120 BPM</label>
+    </div>
+  </div>
+
+  
+  <div class="container">
+    <div class="content" id="sequencer">
+      <!-- Create steps for the sequencer -->
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+      <!-- Add more steps as needed -->
+    </div>
+  </div>
+  <div class="pitch_container">
+    <!-- Create steps for the sequencer -->
+      <div><label class="sequence_slider_label" for="pitch_1">STEP PITCH</label></div>
+      <div><input class="sequence_slider" type="range" id="pitch_1" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_2" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_3" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_4" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_5" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_6" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_7" min=".1" max="2" step=".1" value="1"></div>
+      <div><input class="sequence_slider" type="range" id="pitch_8" min=".1" max="2" step=".1" value="1"></div>
+    <!-- Add more steps as needed -->
+  </div>
+  <div class="velocity_container">
+    <!-- Create steps for the sequencer -->
+      <div><label class="sequence_slider_label" for="pitch_1">STEP VELOCITY</label></div>
+      <div><input class="sequence_slider" type="range" id="velocity_1" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_2" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_3" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_4" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_5" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_6" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_7" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+      <div><input class="sequence_slider" type="range" id="velocity_8" min="0.0" max="1.0" step="0.1" value="0.5"></div>
+    <!-- Add more steps as needed -->
+  </div>
+</div>
+<div class="container">
+  <div class="lower_outer_container">
+    <div class="vco_container">
+        <lable for="OSC_Freq">OSC1 Freq</lable>
+        <input class="slider_param" type="range" id="OSC_Freq" min="110" max="2000" step="1" value="220">
+        <label for="OSC_Freq" id="OSC_Freq_display">220 hz</label>
+    </div>
+    <div class="vco_container">
+        <p1 class="slider_text">SQUARE</p1>
+        <label class="switch">
+        <input type="checkbox" id="OSC_Type">
+        <span class="slider"></span>
+        </label>
+        <p1 class="slider_text">TRI</p1>
+    </div>
+  </div>
+  <div class="lower_outer_container">
+    <div class="vco_container">
+      <lable for="OSC2_Freq">OSC2 FREQ</lable>
+      <input class="slider_param" type="range" id="OSC2_Freq" min="110" max="2000" step="1" value="220">
+      <label for="OSC2_Freq" id="OSC2_Freq_display">220 hz</label>
+    </div>
+    <div class="vco_container">
+      <p1 class="slider_text">SQUARE</p1>
+      <label class="switch">
+        <input type="checkbox" id="OSC2_Type">
+        <span class="slider"></span>
+    </label>
+    <p1 class="slider_text">TRI</p1>
+    </div>
+  </div>
+  <div class="lower_outer_container">
+    <div class="vco_container">
+      <lable for="VCO_Decay">VCO DECAY</lable>
+      <input class="slider_param" type="range" id="VCO_Decay" min="0.01" max=".7" step=".01" value="0">
+      <label for="VCO_Decay" id="VCO_Decay_display"></label>
+    </div>
+    <div class="vco_container">
+      <lable for="VCO_Decay_AMT">VCO DECAY AMT</lable>
+      <input class="slider_param" type="range" id="VCO_Decay_AMT" min="0" max="1000" step="10" value="0">
+      <label for="VCO_Decay_AMT" id="VCO_Decay_AMT_display"></label>
+    </div>
+  </div>
+  <div class="lower_outer_container_slim">
+    <div class="vco_container">
+      <label for="VCA_slider">VCA DECAY</label>
+      <input class="slider_param" id="VCA_slider" type="range" min="0.1" max="4" step="0.1" value="1">
+    </div>
+  </div>
+  <div class="lower_outer_container_wide">
+    <div class="vco_container">
+      <label for="frequencyControl">FILTER FREQ</label>
+      <input class="slider_param" type="range" id="frequencyControl" min="0" max="100" step="1" value="50">
+    </div>
+    <div class="vco_container">
+      <p1 class="slider_text">LP</p1>
+      <label class="switch">
+      <input type="checkbox" id="filter_type">
+      <span class="slider"></span>
+      </label>
+      <p1 class="slider_text">HP</p1>
+    </div>
+    <div class="vco_container"> 
+      <label for="qControl">FILTER Q</label>
+      <input class="slider_param" type="range" id="qControl" min="0.1" max="10" step="0.1" value="1">
+    </div>
+  </div>
+</div>
+  <div class="container">
+    <div class="footer_text">THIS PROGRAM WAS CREATED BY QUINN ALLEMAND UNDER SUPERVISION OF DR.WELLS AT TEMPLE UNIVERSITY. THIS IS STILL A WORK IN PROGRESS SO EXCUSE THE EVENTUAL BUGS AND LACK OF ELEMENTS WITHIN THIS PROGRAM. IF YOU ARE READING THIS THAN THAT MEANS YOU HAVE FULLY USED THE PROGRAM AND I OVERALL HOPE YOU HAD FUN AND WERE ABLE TO USE THESE SOUNDS IN A PROJECT OF YOUR OWN. THANK YOU FOR YOUR PARTICIPATION</div>
+
+  </div>
+</body>
+</html>
