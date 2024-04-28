@@ -296,7 +296,7 @@ function toggleFilterType () {
 
 function updateTempo() {
     newTempo = parseInt(tempoSlider.value)
-    document.getElementById("tempo_display").innerText = `${parseInt(tempoSlider.value / 4)} BPM`
+    document.getElementById("tempo_display").innerText = `${parseInt(tempoSlider.value / 2)} BPM`
 };
 // updates our master gainNode value
 function updateGain() {
@@ -525,7 +525,7 @@ function startRecordingbutton() {
       const url = URL.createObjectURL(blob);
       const downloadLink = document.getElementById('downloadLink');
       downloadLink.href = url;
-      downloadLink.download = 'recording.wav';
+      downloadLink.download = 'DFAM_LITE_RECORDING.wav';
       downloadLink.style.display = 'block';
     };
 
@@ -547,8 +547,8 @@ function startRecordingbutton() {
     return destination.stream;
 };
 
-  startRecording.addEventListener('click', startRecordingbutton);
-  stopRecording.addEventListener('click', stopRecordingbutton);
+startRecording.addEventListener('click', startRecordingbutton);
+stopRecording.addEventListener('click', stopRecordingbutton);
 // Event listeners
 startButton.addEventListener('click', function () {
     const tempo = parseInt(tempoSlider.value);

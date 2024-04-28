@@ -11,9 +11,29 @@
 background-color: #3e3e3e;
   }
   h1 {
-    color: #ffcc00;
+    color: #eac327;
     font-size:xx-large;
+    font-family:monospace;
+    font-style: bold;
   }
+  h2 {
+    font-family:monospace;
+    font-style:normal;
+    font-size:larger;
+  }
+
+  .footer_text {
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+      font-size: smaller;
+      color: #262626;
+      height: 100px;
+      width: 1000px;
+      text-align: center;
+  }
+
   .switch {
       position: relative;
       display: inline-block;
@@ -46,7 +66,7 @@ background-color: #3e3e3e;
       width: 16px;
       left: 4px;
       bottom: 4px;
-      background-color: #cbb24c;
+      background-color: #eac327;
       box-shadow: -1px 1px 5px #464646, 1px -1px 5px #272727;
       -webkit-transition: .4s;
       transition: .4s;
@@ -78,7 +98,7 @@ background-color: #3e3e3e;
   }
 
   .active {
-    background-color: #ffcc00; /* Change color for active step */
+    background-color: #eac327; /* Change color for active step */
     box-shadow: 3px 3px 10px #cbb24c, -3px -3px 10px #4f4006;
     
   }
@@ -110,7 +130,7 @@ background-color: #3e3e3e;
     appearance: none;
     width: 12px;
     height: 12px;
-    background-color: #cbb24c;
+    background-color: #eac327;
    border-radius: 50%;
    box-shadow: 1px -1px 5px #464646, -1px 1px 5px #272727;
   }
@@ -184,7 +204,7 @@ background-color: #3e3e3e;
     appearance: none;
     width: 12px;
     height: 12px;
-    background-color: #cbb24c;
+    background-color: #eac327;
    border-radius: 50%;
    box-shadow: 1px -1px 5px #464646, -1px 1px 5px #272727;
   }
@@ -306,22 +326,27 @@ background-color: #3e3e3e;
     display:flex;
     flex-direction: column;
     align-items: center;
-    margin-left:  50px;
-    margin-right: 10px;
     border-radius: 10px;
     box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
-    height: 150px;
-    width: 100px;
+    height: 450px;
+    width: 600px;
+    margin-bottom: 10px;
+    font-family: monospace;
+    font-size: small;
+    font-style: normal;
+    text-align: center;
   }
 
   .explanation_content {
     display:flex;
     justify-content: center;
     height: 20px;
-    width: 100px;
+    width: 550px;
     border-radius: 10px;
     color:#ccc;
     margin-top:10px;
+    margin-bottom: 20px;
+    
   }
 
   .btn {
@@ -342,27 +367,27 @@ background-color: #3e3e3e;
   }
 
   .play_btn {
-    background-color:#0263bd;
+    background-color:#eac327;
     border: none;
     border-radius: 30px;
-    color: #ccc;
+    color: #000000;
     box-shadow: -3px -3px 10px #464646, 3px 3px 10px #272727;
     margin: 10px;
     height: 50px;
     width:100px;
     font-family:monospace;
     font-style: bold;
-    font-size: small;
+    font-size: medium;
   }
   .play_btn:active {
-    box-shadow: 1px 1px 5px #464646, -1px -1px 5px #272727;
+    box-shadow: 2px 2px 10px #464646, -2px -2px 10px #272727;
   }
 
   .play_btn.active {
-    box-shadow: 1px 1px 5px #297fd0, -1px -1px 5px #001931;
+    box-shadow: 1px 1px 5px #464646, -1px -1px 5px #272727;
   }
   a {
-    color: yellow;
+    color: #eac327;
   }
 
   .title_cards {
@@ -379,6 +404,19 @@ background-color: #3e3e3e;
   <div class="container">
     <div class="title_outer_container_wide">
       <h1 >The DFAM Lite</h1>
+    </div>
+  </div>
+    <div class="container">
+      <div class="explanation_container">
+        <div class="explanation_content">WELCOME!</div>
+        <div class="explanation_content">THE DFAM LITE IS AN INTERPRETATION OF THE "DFAM" FROM MOOG WHICH IS A STEP SEQUENCER MEANT TO MIMIC DRUM NOISES USING SYNTHESIZED SOUND.</div>
+        <div class="explanation_content">IN ORDER TO GET STARTED YOU FIRST NEED TO HIT THE "INITIALIZE SOUND" BUTTON BELOW. THIS WILL START THE OSCILLARS AS WELL AS THE WHITE NOISE GENERATOR. </div>
+        <div class="explanation_content">AFTER THAT, PRESS THE "START/STOP" BUTTON, WHICH WILL START THE SEQUENCER, AND THEN SLIDE THE MASTER VOLUME UP TO AN APPROPRIATE VOLUME FOR YOUR SYSTEM.</div>
+        <div class="explanation_content">FROM THERE YOU CAN USE ANY OF THE SLIDERS OR SWITCHES BELOW IN ORDER TO CREATE A SOUND THAT YOU LIKE.</div>
+        <div class="explanation_content">TO RECORD SOUND, JUST HIT THE "START RECORDING" BUTTON. THIS WILL CAPTURE THE SOUND STARTING FROM THE MOMENT THE BUTTON IS PRESSED.</div>
+        <div class="explanation_content">ONCE DONE, JUST HIT THE "STOP RECORDING" BUTTON AND A DOWNLOAD LINK WILL APPEAR UNDER THE "INITIALIZE SOUND" BUTTON.</div>
+        <div class="explanation_content">CLICK THE LINK TO DOWNLOAD YOUR VERY OWN "DFAM_LITE_RECORDING.WAV" FILE</div>
+        <div class="explanation_content">ENJOY!</div>
     </div>
   </div>
   <div class="container">
@@ -415,8 +453,8 @@ background-color: #3e3e3e;
     </div>
     <div class="master_mixer_content">
       <lable for="tempoSlider">Tempo</lable>
-      <input class="slider_param" type="range" id="tempoSlider" min="100" max="1200" value="360.0">
-      <label for="tempoSlider" id="tempo_display">90 BPM</label>
+      <input class="slider_param" type="range" id="tempoSlider" min="50" max="800" value="240.0">
+      <label for="tempoSlider" id="tempo_display">120 BPM</label>
     </div>
   </div>
 
@@ -437,7 +475,7 @@ background-color: #3e3e3e;
   </div>
   <div class="pitch_container">
     <!-- Create steps for the sequencer -->
-      <div><label class="sequence_slider_label" for="pitch_1">PITCH</label></div>
+      <div><label class="sequence_slider_label" for="pitch_1">STEP PITCH</label></div>
       <div><input class="sequence_slider" type="range" id="pitch_1" min=".1" max="2" step=".1" value="1"></div>
       <div><input class="sequence_slider" type="range" id="pitch_2" min=".1" max="2" step=".1" value="1"></div>
       <div><input class="sequence_slider" type="range" id="pitch_3" min=".1" max="2" step=".1" value="1"></div>
@@ -450,7 +488,7 @@ background-color: #3e3e3e;
   </div>
   <div class="velocity_container">
     <!-- Create steps for the sequencer -->
-      <div><label class="sequence_slider_label" for="pitch_1">VELOCITY</label></div>
+      <div><label class="sequence_slider_label" for="pitch_1">STEP VELOCITY</label></div>
       <div><input class="sequence_slider" type="range" id="velocity_1" min="0.0" max="1.0" step="0.1" value="0.5"></div>
       <div><input class="sequence_slider" type="range" id="velocity_2" min="0.0" max="1.0" step="0.1" value="0.5"></div>
       <div><input class="sequence_slider" type="range" id="velocity_3" min="0.0" max="1.0" step="0.1" value="0.5"></div>
@@ -480,7 +518,7 @@ background-color: #3e3e3e;
   </div>
   <div class="lower_outer_container">
     <div class="vco_container">
-      <lable for="OSC2_Freq">VCO2 FREQ</lable>
+      <lable for="OSC2_Freq">OSC2 FREQ</lable>
       <input class="slider_param" type="range" id="OSC2_Freq" min="110" max="2000" step="1" value="220">
       <label for="OSC2_Freq" id="OSC2_Freq_display">220 hz</label>
     </div>
@@ -529,10 +567,10 @@ background-color: #3e3e3e;
       <input class="slider_param" type="range" id="qControl" min="0.1" max="10" step="0.1" value="1">
     </div>
   </div>
+</div>
+  <div class="container">
+    <div class="footer_text">THIS PROGRAM WAS CREATED BY QUINN ALLEMAND UNDER SUPERVISION OF DR.WELLS AT TEMPLE UNIVERSITY. THIS IS STILL A WORK IN PROGRESS SO EXCUSE THE EVENTUAL BUGS AND LACK OF ELEMENTS WITHIN THIS PROGRAM. IF YOU ARE READING THIS THAN THAT MEANS YOU HAVE FULLY USED THE PROGRAM AND I OVERALL HOPE YOU HAD FUN AND WERE ABLE TO USE THESE SOUNDS IN A PROJECT OF YOUR OWN. THANK YOU FOR YOUR PARTICIPATION</div>
 
-
-
-
-
+  </div>
 </body>
 </html>
