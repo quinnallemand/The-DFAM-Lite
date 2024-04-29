@@ -296,7 +296,7 @@ function toggleFilterType () {
 
 function updateTempo() {
     newTempo = parseInt(tempoSlider.value)
-    document.getElementById("tempo_display").innerText = `${parseInt(tempoSlider.value / 2)} BPM`
+
 };
 // updates our master gainNode value
 function updateGain() {
