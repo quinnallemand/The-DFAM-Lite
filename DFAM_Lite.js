@@ -1,3 +1,4 @@
+
 //initializing WebAudioAPO and assigning the audio context to an object
 const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
@@ -351,13 +352,14 @@ const startTone = function() {
                  adsrNode1.gain.setValueAtTime(
                     parseFloat(velControl1.value),
                      audioCtx.currentTime)
-                //this adds to the oscilator starting frequency by adding the value from the VCO AMT slider to the original Freq
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+        
                 //allows the user to create new freqencies within the sequency by either adding or subtracting from the original frequency using the "Pitch" sliders
                 const newOsc1Freq1 = oscFreq * parseFloat(pitchControl1.value)
                 const newOsc2Freq1 = oscFreq2 * parseFloat(pitchControl1.value)
                 //brings the frequency back down to the frequency specified in the oscilator frequency Slider and changes the time it returns using the VCO DECAY slider
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq1 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq1 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq1, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq1, audioCtx.currentTime + addedTime)
                 //This code is repeated for each of the steps in the sequence being that there are multiple ADSR components as well as individual Pitch Sliders for each step
@@ -366,11 +368,14 @@ const startTone = function() {
             // Action to be executed when the sequencer is at step 2
             adsrNode2.gain.setValueAtTime(parseFloat(velControl2.value), audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value),addedTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), addedTime)
+              
 
                 const newOsc1Freq2 = oscFreq * parseFloat(pitchControl2.value)
                 const newOsc2Freq2 = oscFreq2 * parseFloat(pitchControl2.value)
+
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq2, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq2, audioCtx.currentTime + addedTime)
             break;
@@ -380,11 +385,13 @@ const startTone = function() {
                 parseFloat(velControl3.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+              
 
                 const newOsc1Freq3 = oscFreq * parseFloat(pitchControl3.value)
                 const newOsc2Freq3 = oscFreq2 * parseFloat(pitchControl3.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq3 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq3 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq3, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq3, audioCtx.currentTime + addedTime)
             break;
@@ -394,11 +401,11 @@ const startTone = function() {
                 parseFloat(velControl4.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-
                 const newOsc1Freq4 = oscFreq * parseFloat(pitchControl4.value)
                 const newOsc2Freq4 = oscFreq2 * parseFloat(pitchControl4.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq4 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq4 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq4, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq4, audioCtx.currentTime + addedTime)
             break;
@@ -408,11 +415,11 @@ const startTone = function() {
                 parseFloat(velControl5.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-
                 const newOsc1Freq5 = oscFreq * parseFloat(pitchControl5.value)
                 const newOsc2Freq5 = oscFreq2 * parseFloat(pitchControl5.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq5 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq5 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq5, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq5, audioCtx.currentTime + addedTime)
             break;
@@ -422,11 +429,11 @@ const startTone = function() {
                 parseFloat(velControl6.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-
                 const newOsc1Freq6 = oscFreq * parseFloat(pitchControl6.value)
                 const newOsc2Freq6 = oscFreq2 * parseFloat(pitchControl6.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq6 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq6 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq6, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq6, audioCtx.currentTime + addedTime)
             break;
@@ -436,11 +443,11 @@ const startTone = function() {
                 parseFloat(velControl7.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-
                 const newOsc1Freq7 = oscFreq * parseFloat(pitchControl7.value)
                 const newOsc2Freq7 = oscFreq2 * parseFloat(pitchControl7.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq7 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq7 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq7, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq7, audioCtx.currentTime + addedTime)
             break;
@@ -450,11 +457,11 @@ const startTone = function() {
                 parseFloat(velControl8.value), 
                 audioCtx.currentTime)
 
-                oscillator.frequency.setValueAtTime(oscFreq + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-                oscillator2.frequency.setValueAtTime(oscFreq2 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
-
                 const newOsc1Freq8 = oscFreq * parseFloat(pitchControl8.value)
                 const newOsc2Freq8 = oscFreq2 * parseFloat(pitchControl8.value)
+                oscillator.frequency.linearRampToValueAtTime(newOsc1Freq8 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+                oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq8 + parseInt(VC0_Decay_AMT_Control.value), audioCtx.currentTime)
+
                 oscillator.frequency.linearRampToValueAtTime(newOsc1Freq8, audioCtx.currentTime + addedTime)
                 oscillator2.frequency.linearRampToValueAtTime(newOsc2Freq8, audioCtx.currentTime + addedTime)
             break;
